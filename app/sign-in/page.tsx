@@ -9,7 +9,6 @@ export default function SignInPage() {
           <SignIn />
           <Link href="/">Return Home</Link>
         </div>
-
       </div>
     </>
   );

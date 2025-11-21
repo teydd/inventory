@@ -1,7 +1,12 @@
 import Sidebar from "@/components/sidebar";
+import { getCurrentUser } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import React from "react";
 
 export default async function Inventory({}) {
+    const user = getCurrentUser()
+    const userId = user.id
+    const totalProducts = await prisma.product.findMany({where :{userId}})
   return (
     <>
       <div className="min-h-screen ">
@@ -24,14 +29,35 @@ export default async function Inventory({}) {
               <table className="w-full">
                 <thead className="bg-cyan-50">
                   <tr>
-                    <th>Name</th>
-                    <th>SKU</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Low Stock</th>
-                    <th>Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">Name</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">SKU</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">Price</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">Quantity</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">Low Stock</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">Actions</th>
                   </tr>
                 </thead>
+                <tbody className=" bg-white divide-y divide-gray-200">
+                    {totalProducts.map((product,key)=>(
+                        <tr className="hover:bg-cyan-500" key={key}>
+                            <td className="px-6 py-4 text-sm text-gray-500 ">
+                                {product.name}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-500 ">
+                                {product.SKU || "-"}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-500 ">
+                                ${Number(product.price).toFixed(2)}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-500 ">
+                                {product.quantity}
+                            </td>
+                            <td className="px-6 py-4 text-sm text-gray-500 ">
+                                {product.lowStockAt || "-"}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
               </table>
             </div>
           </div>

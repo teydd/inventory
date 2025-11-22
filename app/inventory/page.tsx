@@ -1,11 +1,12 @@
 import Sidebar from "@/components/sidebar";
+import { deleteProduct } from "@/lib/actions/products";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import React from "react";
 
-export default async function Inventory({}) {
-  const user = getCurrentUser();
-  const userId = user.id;
+export default async function Inventory({searchParams,}: {searchParams: Promise<{q?: string}> {
+  const user = await getCurrentUser();
+  const userId = user?.id;
   const totalProducts = await prisma.product.findMany({ where: { userId } });
   return (
     <>
@@ -25,47 +26,63 @@ export default async function Inventory({}) {
             </div>
           </div>
           <div className="space-y-6">
+            <div className="bg-white rounded-lg p-6 border border-cyan-200">
+              <form className="flex gap-2" action="/inventory" method="GET">
+              <input type="text" name="q" id="" placeholder="Search products.." className="flex-1 px-4 py-2 vorder border-cyan-300 rounded-lg focus:border-transparent"/>
+              <button className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">Search</button>
+              </form>
+
+            </div>
             <div className="bg-white rounded-lg border border-cyan-200 overflow-hidden">
               <table className="w-full">
                 <thead className="bg-cyan-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       SKU
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Price
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Quantity
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Low Stock
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 upercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className=" bg-white divide-y divide-gray-200">
                   {totalProducts.map((product, key) => (
-                    <tr className="hover:bg-cyan-500" key={key}>
+                    <tr className="hover:bg-cyan-50" key={key}>
                       <td className="px-6 py-4 text-sm text-gray-500 ">
                         {product.name}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 ">
-                        {product.SKU || "-"}
+                        {product.sku || "-"}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 ">
-                        ${Number(product.price).toFixed(2)}
+                        ksh{Number(product.price).toFixed(2)}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 ">
                         {product.quantity}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 ">
                         {product.lowStockAt || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 ">
+                        <form action={async (formData:FormData)=>{
+                          "use server"
+                          await deleteProduct(formData)
+                        } }>
+                          <input type="hidden" name="id" value={product.id}/>
+                          <button className="text-red-600 hover:text-red-900">Delete</button>
+                        </form>
                       </td>
                     </tr>
                   ))}

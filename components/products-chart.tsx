@@ -17,7 +17,7 @@ export default function ProductsChart({ data }: { data: ChartData[] }) {
   return (
     <>
       <div className="h-48 w-full">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={200}>
           <AreaChart
             data={data}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -28,15 +28,15 @@ export default function ProductsChart({ data }: { data: ChartData[] }) {
             ></CartesianGrid>
             <XAxis
               dataKey="week"
-              stroke="666"
+              stroke="#666"
               fontSize={12}
               tickLine={false}
               axisLine={false}
             >
-              {" "}
+              
             </XAxis>
             <YAxis
-              stroke="666"
+              stroke="#666"
               fontSize={12}
               tickLine={false}
               axisLine={false}

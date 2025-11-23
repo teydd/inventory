@@ -8,31 +8,32 @@ import React from "react";
 export default async function Inventory({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string, page?:string  }>;
+  searchParams: Promise<{ q?: string; page?: string }>;
 }) {
   const user = await getCurrentUser();
   const userId = user?.id;
 
-  const params = await searchParams
-  const q = (params.q ?? "").trim()
-  const page = Math.max(1,Number(params.page ?? 1))
-  const pageSize = 5
+  const params = await searchParams;
+  const q = (params.q ?? "").trim();
+  const page = Math.max(1, Number(params.page ?? 1));
+  const pageSize = 5;
 
-  const where = { userId, 
-    ...(q ? { name :{contains: q,mode:"insensitive" as const}}:{}) }
+  const where = {
+    userId,
+    ...(q ? { name: { contains: q, mode: "insensitive" as const } } : {}),
+  };
 
+  const [totalCount, items] = await Promise.all([
+    prisma.product.count({ where }),
+    prisma.product.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    }),
+  ]);
 
-  const  [totalCount, items] = await Promise.all([
-    prisma.product.count({where}),
-    prisma.product.findMany({ where,
-      orderBy:{createdAt:"desc"},
-      skip : (page -1 )* pageSize,
-      take:pageSize
-    })
-  ])   
-
-  const totalPages = Math.max(1, Math.ceil(totalCount/pageSize))
-
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
   return (
     <>
@@ -126,9 +127,16 @@ export default async function Inventory({
                 </tbody>
               </table>
             </div>
-            {totalPages > 1 && <div className="bg-white rounded-lg border border-cyan-200 p-6">
-              <Pagination currentPage = {page} totalPages = {totalPages} baseUrl = "/inventory" searchParams = {{q, pageSize : String(pageSize)}}  />
-            </div>}
+            {totalPages > 1 && (
+              <div className="bg-white rounded-lg border border-cyan-200 p-6">
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  baseUrl="/inventory"
+                  searchParams={{ q, pageSize: String(pageSize) }}
+                />
+              </div>
+            )}
           </div>
         </main>
       </div>

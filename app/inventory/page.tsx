@@ -1,13 +1,39 @@
+import Pagination from "@/components/Pagination";
 import Sidebar from "@/components/sidebar";
 import { deleteProduct } from "@/lib/actions/products";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import React from "react";
 
-export default async function Inventory({searchParams,}: {searchParams: Promise<{q?: string}> {
+export default async function Inventory({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string, page?:string  }>;
+}) {
   const user = await getCurrentUser();
   const userId = user?.id;
-  const totalProducts = await prisma.product.findMany({ where: { userId } });
+
+  const params = await searchParams
+  const q = (params.q ?? "").trim()
+  const page = Math.max(1,Number(params.page ?? 1))
+  const pageSize = 5
+
+  const where = { userId, 
+    ...(q ? { name :{contains: q,mode:"insensitive" as const}}:{}) }
+
+
+  const  [totalCount, items] = await Promise.all([
+    prisma.product.count({where}),
+    prisma.product.findMany({ where,
+      orderBy:{createdAt:"desc"},
+      skip : (page -1 )* pageSize,
+      take:pageSize
+    })
+  ])   
+
+  const totalPages = Math.max(1, Math.ceil(totalCount/pageSize))
+
+
   return (
     <>
       <div className="min-h-screen ">
@@ -28,10 +54,17 @@ export default async function Inventory({searchParams,}: {searchParams: Promise<
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 border border-cyan-200">
               <form className="flex gap-2" action="/inventory" method="GET">
-              <input type="text" name="q" id="" placeholder="Search products.." className="flex-1 px-4 py-2 vorder border-cyan-300 rounded-lg focus:border-transparent"/>
-              <button className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">Search</button>
+                <input
+                  type="text"
+                  name="q"
+                  id=""
+                  placeholder="Search products.."
+                  className="flex-1 px-4 py-2 border border-cyan-300 rounded-lg focus:border-transparent"
+                />
+                <button className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700">
+                  Search
+                </button>
               </form>
-
             </div>
             <div className="bg-white rounded-lg border border-cyan-200 overflow-hidden">
               <table className="w-full">
@@ -58,7 +91,7 @@ export default async function Inventory({searchParams,}: {searchParams: Promise<
                   </tr>
                 </thead>
                 <tbody className=" bg-white divide-y divide-gray-200">
-                  {totalProducts.map((product, key) => (
+                  {items.map((product, key) => (
                     <tr className="hover:bg-cyan-50" key={key}>
                       <td className="px-6 py-4 text-sm text-gray-500 ">
                         {product.name}
@@ -76,12 +109,16 @@ export default async function Inventory({searchParams,}: {searchParams: Promise<
                         {product.lowStockAt || "-"}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500 ">
-                        <form action={async (formData:FormData)=>{
-                          "use server"
-                          await deleteProduct(formData)
-                        } }>
-                          <input type="hidden" name="id" value={product.id}/>
-                          <button className="text-red-600 hover:text-red-900">Delete</button>
+                        <form
+                          action={async (formData: FormData) => {
+                            "use server";
+                            await deleteProduct(formData);
+                          }}
+                        >
+                          <input type="hidden" name="id" value={product.id} />
+                          <button className="text-red-600 hover:text-red-900">
+                            Delete
+                          </button>
                         </form>
                       </td>
                     </tr>
@@ -89,6 +126,9 @@ export default async function Inventory({searchParams,}: {searchParams: Promise<
                 </tbody>
               </table>
             </div>
+            {totalPages > 1 && <div className="bg-white rounded-lg border border-cyan-200 p-6">
+              <Pagination currentPage = {page} totalPages = {totalPages} baseUrl = "/inventory" searchParams = {{q, pageSize : String(pageSize)}}  />
+            </div>}
           </div>
         </main>
       </div>

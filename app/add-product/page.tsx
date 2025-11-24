@@ -1,4 +1,5 @@
 import Sidebar from "@/components/sidebar";
+import { createProduct } from "@/lib/actions/products";
 import { getCurrentUser } from "@/lib/auth";
 import Link from "next/link";
 import React from "react";
@@ -25,7 +26,7 @@ export default async function AddProduct() {
 
         <div className="max-w-2xl">
           <div className="bg-white rounded-lg border border-cyan-200 p-6">
-            <form className="spac-y-6">
+            <form className="spac-y-6" action={createProduct}>
               <div>
                 <label
                   className="block text-sm font-medium text-gray-700 mb-2"
@@ -91,7 +92,6 @@ export default async function AddProduct() {
                   name="sku"
                   id="sku"
                   placeholder="Enter SKU"
-                  required
                 />
               </div>
               <div>
@@ -106,9 +106,7 @@ export default async function AddProduct() {
                   type="lowStockAt"
                   name="lowStockAt"
                   id="lowStockAt"
-                  placeholder="0.0"
-                  required
-                  step={0.01}
+                  placeholder="0.0"                  step={0.01}
                   min={0}
                 />
               </div>

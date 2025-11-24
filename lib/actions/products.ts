@@ -18,7 +18,7 @@ export async function deleteProduct(formData: FormData) {
   const id = String(formData.get("id") || "");
 
   await prisma.product.deleteMany({
-    where: { id, userId: user.id },
+    where: { id: id, userId: user.id },
   });
 }
 

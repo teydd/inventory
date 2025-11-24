@@ -106,7 +106,8 @@ export default async function AddProduct() {
                   type="lowStockAt"
                   name="lowStockAt"
                   id="lowStockAt"
-                  placeholder="0.0"                  step={0.01}
+                  placeholder="0.0"
+                  step={0.01}
                   min={0}
                 />
               </div>

@@ -44,9 +44,9 @@ export async function createProduct(formData: FormData) {
         userId: user.id,
       },
     });
-    return redirect("/inventory")
+    return redirect("/inventory");
   } catch (error) {
-    console.error("Error creating product:", error); // ✅ log actual error
-    throw error; // ✅ don’t swallow it    
+    console.error("Error creating product:", error); 
+    throw error;
   }
 }

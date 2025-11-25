@@ -24,10 +24,9 @@ export default async function SettingsPage() {
           </div>
           <div className="max-w-6xl">
             <div className="bg-white rounded-lg border border-cyan-200 p-6">
-                <AccountSettings fullPage></AccountSettings>
-
+              <AccountSettings fullPage></AccountSettings>
             </div>
-        </div>
+          </div>
         </main>
       </div>
     </>

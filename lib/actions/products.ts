@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "../auth";
 import { prisma } from "../prisma";
 import { z } from "zod";
-import { Decimal } from "@prisma/client/runtime/client";
 
 const ProductSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -43,11 +42,11 @@ export async function createProduct(formData: FormData) {
       data: {
         ...parsed.data,
         userId: user.id,
-        price: new Decimal(parsed.data.price),
       },
     });
-    redirect("/inventory");
+    return redirect("/inventory")
   } catch (error) {
-    throw new Error("Failed to create product.");
+    console.error("Error creating product:", error); // ✅ log actual error
+    throw error; // ✅ don’t swallow it    
   }
 }

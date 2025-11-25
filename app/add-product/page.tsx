@@ -71,10 +71,11 @@ export default async function AddProduct() {
                   </label>
                   <input
                     className="w-full px-4 py-2 border border-cyan-300 rounded-lg focus:border-transparent "
-                    type="text"
+                    type="number"
                     name="quantity"
-                    id="name"
-                    placeholder="Quantity"
+                    id="quantity"
+                    placeholder="0"
+                    min={0}
                     required
                   />
                 </div>
@@ -103,24 +104,23 @@ export default async function AddProduct() {
                 </label>
                 <input
                   className="w-full px-4 py-2 border border-cyan-300 rounded-lg focus:border-transparent "
-                  type="lowStockAt"
+                  type="number"
                   name="lowStockAt"
                   id="lowStockAt"
-                  placeholder="0.0"
-                  step={0.01}
+                  placeholder="Enter low stock threshold"
                   min={0}
                 />
               </div>
-              <div className="flex gap-5">
+              <div className="flex gap-5 mt-3">
                 <button
                   type="submit"
-                  className="px-5 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
+                  className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700"
                 >
                   Add Product
                 </button>
                 <Link
                   href={"/inventory"}
-                  className="px-5 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+                  className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
                 >
                   Cancel
                 </Link>

@@ -119,7 +119,7 @@ export default async function DashboardPage() {
 
               <div className="text-center">
                 <div className="text-3xl font-bold text-gray-900">
-                  ${Number(totalValue).toFixed(0)}
+                  ksh{Number(totalValue).toFixed(0)}
                 </div>
                 <div className="text-sm text-gray-600">Total Value</div>
                 <div className="flex items-center justify-center mt-1">

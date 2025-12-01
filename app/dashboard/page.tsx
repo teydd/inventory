@@ -124,7 +124,7 @@ export default async function DashboardPage() {
                 <div className="text-sm text-gray-600">Total Value</div>
                 <div className="flex items-center justify-center mt-1">
                   <span className="text-xs text-green-600">
-                    +${Number(totalValue).toFixed(0)}
+                    +ksh{Number(totalValue).toFixed(0)}
                   </span>
                   <TrendingUp className="w-3 h-3 text-green-600 ml-1" />
                 </div>

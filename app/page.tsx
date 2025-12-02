@@ -1,4 +1,4 @@
-import Link from "next/link";
+import HomeCTAs from "./HomeCTAs";
 
 export default function Home() {
   return (
@@ -14,20 +14,7 @@ export default function Home() {
               management system.Track products, monitor stock levels and gain
               valuable insights
             </p>
-            <div className="flex gap-4 justify-center">
-              <Link
-                className="bg-cyan-600 text-white border-2 rounded-lg px-8 py-3 font-semibold hover:bg-cyan-700 transition-colors"
-                href="/sign-in"
-              >
-                Sign in
-              </Link>
-              <Link
-                className="bg-white text-cyan-600 px-8 py-3 rounded-lg border-2 border-cyan-600 hover:bg-cyan-100"
-                href="/sign-in"
-              >
-                Learn More
-              </Link>
-            </div>
+            <HomeCTAs />
           </div>
         </div>
       </div>
